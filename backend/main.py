@@ -15,18 +15,14 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todos.db'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://todotest:helloworld@localhost/todotest'
 
-"""
-db.init_app(app)
-migrate = Migrate(app, db)
-"""
-
 class Base(DeclarativeBase):
   pass
-
+  
 db = SQLAlchemy(app, model_class=Base)
+migrate = Migrate(app, db)
+
 
 class TodoItem(db.Model):
-    
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     title: Mapped[str] = mapped_column(String(100))
     done: Mapped[bool] = mapped_column(default=False)
