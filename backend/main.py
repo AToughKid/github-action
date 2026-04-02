@@ -75,7 +75,7 @@ def add_todo():
         # return http response code 400 for bad requests
         return (jsonify({'error': 'Invalid todo data'}), 400)
     
-"""
+
 @app.route('/api/todos/<int:id>/toggle/', methods=['PATCH'])
 def toggle_todo(id):
     todo = TodoItem.query.get_or_404(id)
@@ -92,6 +92,7 @@ def delete_todo(id):
     return jsonify({'message': 'Todo deleted successfully'})
 
 
+"""
 @app.route('/api/todos/<int:todo_id>/comments/', methods=['POST'])
 def add_comment(todo_id):
     todo_item = TodoItem.query.get_or_404(todo_id)
