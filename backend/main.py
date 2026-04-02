@@ -4,8 +4,8 @@ from flask_migrate import Migrate
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship 
+from sqlalchemy import Integer, String, ForeignKey
 
 from models import TodoItem, Comment, db
 
@@ -17,7 +17,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todos.db'
 
 class Base(DeclarativeBase):
   pass
-  
+
 db = SQLAlchemy(app, model_class=Base)
 migrate = Migrate(app, db)
 
@@ -27,17 +27,36 @@ class TodoItem(db.Model):
     title: Mapped[str] = mapped_column(String(100))
     done: Mapped[bool] = mapped_column(default=False)
 
+    comments: Mapped[list["Comment"]] = relationship(back_populates="todo")
+
     def to_dict(self):
         return {
             "id": self.id,
             "title": self.title,
-            "done": self.done
+            "done": self.done,
+            "comments": [
+                comment.to_dict() for comment in self.comments
+            ]
         }
 
-with app.app_context():
-    db.create_all()
+
+class Comment(db.Model):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    message: Mapped[str] = mapped_column(String(250))
+
+    todo_id: Mapped[int] = mapped_column(ForeignKey('todo_item.id', ondelete="CASCADE"))
+
+    todo: Mapped["TodoItem"] = relationship(back_populates="comments")
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "message": self.message,
+            "todo_id": self.todo_id
+        }
 
 
+"""
 INITIAL_TODOS = [
     TodoItem(title='Learn Flask'),
     TodoItem(title='Build a Flask App'),
@@ -48,7 +67,7 @@ with app.app_context():
         for item in INITIAL_TODOS:
             db.session.add(item)
         db.session.commit()
-
+"""
 
 @app.route('/api/todos/', methods=['GET'])
 def get_todos():
