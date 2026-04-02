@@ -114,6 +114,8 @@ function App() {
                 </ul>
               </>
             )}
+
+            {/*
             <div className="new-comment-forms">
               <input
                 type="text"
@@ -125,6 +127,8 @@ function App() {
               />
               <button onClick={() => {addNewComment(todo.id)}}>Add Comment</button>
             </div>
+            */}
+
           </li>
         ))}
       </ul>
