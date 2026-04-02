@@ -2,6 +2,11 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
 
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import Integer, String
+from sqlalchemy.orm import Mapped, mapped_column
+
 from models import TodoItem, Comment, db
 
 app = Flask(__name__)
@@ -10,8 +15,31 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todos.db'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://todotest:helloworld@localhost/todotest'
 
+"""
 db.init_app(app)
 migrate = Migrate(app, db)
+"""
+
+class Base(DeclarativeBase):
+  pass
+
+db = SQLAlchemy(app, model_class=Base)
+
+class TodoItem(db.Model):
+    
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    title: Mapped[str] = mapped_column(String(100))
+    done: Mapped[bool] = mapped_column(default=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "done": self.done
+        }
+
+with app.app_context():
+    db.create_all()
 
 """
 INITIAL_TODOS = [
