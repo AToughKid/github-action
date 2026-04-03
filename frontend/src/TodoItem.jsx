@@ -38,7 +38,7 @@ function TodoItem({todo, toggleDone, deleteTodo, addNewComment}) {
               setNewComment(value);
             }}
           />
-          <button onClick={() => {                          d:
+          <button onClick={() => {                          
           addNewComment(todo.id, newComment);
           setNewComment("");
         }}>Add Comment</button>
