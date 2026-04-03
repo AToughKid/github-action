@@ -14,7 +14,7 @@ describe('TodoItem', () => {
     render(
       <TodoItem todo={baseTodo} />
     );
-    expect(screen.getByText('Sample Todo')).toBeInTheDocument();
+    expect(screen.getByText('Sample TodoX')).toBeInTheDocument();
     expect(screen.getByText('No comments')).toBeInTheDocument();
   });
 
